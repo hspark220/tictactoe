@@ -23,20 +23,19 @@ const gameBoard = (() => {
             (_board[2] === _board[4] && _board[4] === _board[6] && _board[2] != "") ||
             (_board[6] === _board[7] && _board[8] === _board[7] && _board[6] != "") ||
             (_board[1] === _board[4] && _board[4] === _board[7] && _board[1] != "") ||
-            (_board[3] === _board[4] && _board[4] === _board[5] && _board[3] != "")
-            ){
-                console.log("GAME ENDED");
-            }
+            (_board[3] === _board[4] && _board[4] === _board[5] && _board[3] != "")){
+            return true;
+        }
         else {
-            if (_board.includes('') === true) {
-                return;
-            } else {
-                console.log("IT'S A DRAW");
-            }
+            return false;
         }
     }    
 
-    return {markBoard, getBoardMark, checkBoard}
+    const isFull = () => {
+        return !_board.includes("");
+    }
+
+    return {markBoard, getBoardMark, checkBoard, isFull}
 })();
 
 const player = (_name, _mark) => {
@@ -48,13 +47,13 @@ const player = (_name, _mark) => {
         return _mark;
     }
 
-    return {getMark}
+    return {getMark, getName}
 }
 
 const game = ((player1, player2) => {
-    let _playerTurn = player1;
+    let _playerTurn;
 
-    const printBoard = () => {
+    const _printBoard = () => {
         for(let i = 0; i < 9; i++) {
             const box = document.getElementById(`box${i+1}`);
             box.addEventListener('click', _markBox);
@@ -65,25 +64,41 @@ const game = ((player1, player2) => {
         const position = e.target.getAttribute('id')[3]-1;
         if(gameBoard.getBoardMark(position) === ''){
             //change to player's marking
-            e.target.append('X');
-            gameBoard.markBoard(position, 'X');
-            gameBoard.checkBoard();
+            e.target.append(_playerTurn.getMark());
+            gameBoard.markBoard(position, _playerTurn.getMark());
+
+
+            if(gameBoard.checkBoard() || gameBoard.isFull()) {endGame()}
+
+            _togglePlayer();
         } else {
             console.log("SOME ERROR MESSAGE?")
         }
     }
 
-    const playGame = () => {
-        player1 = new player('xania', 'X');
-        player2 = new player('apeach', 'O');
-
+    _togglePlayer = () => {
+        _playerTurn = _playerTurn === player1 ? player2 : player1;
     }
 
+    const endGame = () => {
+        if(gameBoard.checkBoard()) {
+            console.log(`${_playerTurn.getName()} HAS WON!`)
+        } else {
+            console.log('GAME IS A DRAW!')
+        }
+        
+    }
+
+    const playGame = () => {
+        player1 = player('xania', 'X');
+        player2 = player('apeach', 'O');
+        _playerTurn = player1;
+        _printBoard();
+        
+    }
     
-    
-    
-    return{printBoard}
+    return{playGame}
 
 })();
 
-game.printBoard();
+game.playGame();
