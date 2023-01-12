@@ -6,13 +6,33 @@ const gameBoard = (() => {
     ]
 
     const markBoard = (position, mark) => {
-        console.log("MODULE WORKS");
-        //board[position] = mark;
+        board[position] = mark;
 
     }
-    return {markBoard}
+
+    const getBoardMark = (position) => {
+        return _board[position];
+    }
+
+    return {markBoard, getBoardMark}
 })();
 
-const player = (name, mark) => {
-    return {name, mark}
+const player = (_name, _mark) => {
+    const markBox = (position) => {
+        gameBoard.markBoard(position, _mark);
+    }
+
+    return {markBox}
 }
+
+const gameDisplay = (() => {
+    const printBoard = () => {
+        for(let i = 0; i < 9; i++) {
+            const box = document.getElementById(`box${i+1}`);
+            box.append(gameBoard.getBoardMark(i));
+        }
+    };
+    return {printBoard};
+})();
+
+gameDisplay.printBoard();
