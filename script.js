@@ -1,3 +1,4 @@
+//Game board module?
 const gameBoard = (() => {
     let _board = [
         "","","",
@@ -38,6 +39,7 @@ const gameBoard = (() => {
     return {markBoard, getBoardMark, checkBoard, isFull}
 })();
 
+// For creating players
 const player = (_name, _mark) => {
     const getName = () => {
         return _name;
@@ -50,6 +52,7 @@ const player = (_name, _mark) => {
     return {getMark, getName}
 }
 
+// Running the game and the logics
 const game = ((player1, player2) => {
     let _playerTurn;
 
@@ -63,13 +66,11 @@ const game = ((player1, player2) => {
     const _markBox = (e) => {
         const position = e.target.getAttribute('id')[3]-1;
         if(gameBoard.getBoardMark(position) === ''){
-            //change to player's marking
             e.target.append(_playerTurn.getMark());
             gameBoard.markBoard(position, _playerTurn.getMark());
-
-
-            if(gameBoard.checkBoard() || gameBoard.isFull()) {endGame()}
-
+            if(gameBoard.checkBoard() || gameBoard.isFull()) {
+                endGame()
+            }
             _togglePlayer();
         } else {
             console.log("SOME ERROR MESSAGE?")
@@ -81,12 +82,9 @@ const game = ((player1, player2) => {
     }
 
     const endGame = () => {
-        if(gameBoard.checkBoard()) {
-            console.log(`${_playerTurn.getName()} HAS WON!`)
-        } else {
-            console.log('GAME IS A DRAW!')
-        }
-        
+        const endMessage = document.getElementById('game-message');
+        endMessage.innerText = gameBoard.isFull() ? 'GAME IS A DRAW' : `${_playerTurn.getName()} HAS WON!`;
+        //_disableBoard();
     }
 
     const playGame = () => {
