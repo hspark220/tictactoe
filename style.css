@@ -1,6 +1,9 @@
 /* Font Roboto */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,900&display=swap');
 
+* {
+    font-family: Roboto, san-serif;
+}
 /* game */
 .game {
     display: flex;
@@ -15,11 +18,17 @@
     "box1  box2  box3"
     "box4  box5  box6"
     "box7  box8  box9";
-    gap: 10px
+    gap: 10px;
 }
 
 .box {
-    
+    background-color: rgba(240, 226, 226, 0.705);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: 900;
+    font-size: 3rem;
 }
 
 #box1 {
