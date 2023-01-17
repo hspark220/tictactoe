@@ -26,6 +26,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    visibility: hidden;
 
     font-weight: 900;
     font-size: 3rem;
@@ -57,4 +58,8 @@
 }
 #box9 {
     grid-area: box9;
+}
+
+#reset {
+    visibility: hidden;
 }

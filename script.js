@@ -40,7 +40,13 @@ const gameBoard = (() => {
         return _board[position] === "" ? true : false;
     }
 
-    return {markBoard, getBoardMark, checkBoard, isFull, isEmpty}
+    const clearBoard = () => {
+        for (let i = 0; i < _board.length; i++) {
+            _board[i] = '';
+        }
+    }
+
+    return {markBoard, getBoardMark, checkBoard, isFull, isEmpty, clearBoard}
 })();
 
 // For creating players
@@ -59,10 +65,13 @@ const player = (_name, _mark) => {
 // Running the game and the logics
 const game = ((player1, player2) => {
     let _playerTurn;
+    const _resetButton = document.getElementById('reset');
 
-    const _printBoard = () => {
+    const _activateBoard = () => {
         for(let i = 0; i < 9; i++) {
             const box = document.getElementById(`box${i+1}`);
+            box.style.visibility = "visible";
+            box.innerHTML = '';
             box.addEventListener('click', _markBox);
         }
     };
@@ -70,15 +79,20 @@ const game = ((player1, player2) => {
     const _disableBoard = () => {
         for(let i = 0; i < 9; i++) {
             const box = document.getElementById(`box${i+1}`);
+            box.style.visibility = "hidden";
             box.removeEventListener('click', _markBox);
         }
+        
+        _resetButton.style.visibility = "visible";
+        _resetButton.addEventListener('click',_resetGame)
     }
 
     const _markBox = (e) => {
         const position = e.target.getAttribute('id')[3]-1;
+        const currentMark = _playerTurn.getMark()
         if(gameBoard.isEmpty(position)){
             e.target.append(_playerTurn.getMark());
-            gameBoard.markBoard(position, _playerTurn.getMark());
+            gameBoard.markBoard(position, currentMark);
             if(gameBoard.checkBoard() || gameBoard.isFull()) {
                 endGame()
             }
@@ -102,8 +116,16 @@ const game = ((player1, player2) => {
         player1 = player('xania', 'X');
         player2 = player('apeach', 'O');
         _playerTurn = player1;
-        _printBoard();
+        _activateBoard();
+
         
+        
+    }
+
+    const _resetGame = () => {
+        gameBoard.clearBoard();
+        _resetButton.style.visibility = "hidden";
+        _activateBoard();
     }
     
     return{playGame}
