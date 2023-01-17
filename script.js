@@ -8,7 +8,7 @@ const gameBoard = (() => {
 
     const markBoard = (position, mark) => {
         _board[position] = mark;
-        console.log(_board);
+        //console.log(_board);
 
     }
 
@@ -36,7 +36,11 @@ const gameBoard = (() => {
         return !_board.includes("");
     }
 
-    return {markBoard, getBoardMark, checkBoard, isFull}
+    const isEmpty = (position) => {
+        return _board[position] === "" ? true : false;
+    }
+
+    return {markBoard, getBoardMark, checkBoard, isFull, isEmpty}
 })();
 
 // For creating players
@@ -63,9 +67,16 @@ const game = ((player1, player2) => {
         }
     };
 
+    const _disableBoard = () => {
+        for(let i = 0; i < 9; i++) {
+            const box = document.getElementById(`box${i+1}`);
+            box.removeEventListener('click', _markBox);
+        }
+    }
+
     const _markBox = (e) => {
         const position = e.target.getAttribute('id')[3]-1;
-        if(gameBoard.getBoardMark(position) === ''){
+        if(gameBoard.isEmpty(position)){
             e.target.append(_playerTurn.getMark());
             gameBoard.markBoard(position, _playerTurn.getMark());
             if(gameBoard.checkBoard() || gameBoard.isFull()) {
@@ -73,7 +84,7 @@ const game = ((player1, player2) => {
             }
             _togglePlayer();
         } else {
-            console.log("SOME ERROR MESSAGE?")
+            console.log("INVALID MOVE")
         }
     }
 
@@ -84,7 +95,7 @@ const game = ((player1, player2) => {
     const endGame = () => {
         const endMessage = document.getElementById('game-message');
         endMessage.innerText = gameBoard.isFull() ? 'GAME IS A DRAW' : `${_playerTurn.getName()} HAS WON!`;
-        //_disableBoard();
+        _disableBoard();
     }
 
     const playGame = () => {
