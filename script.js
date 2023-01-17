@@ -8,7 +8,7 @@ const gameBoard = (() => {
 
     const markBoard = (position, mark) => {
         _board[position] = mark;
-        //console.log(_board);
+        console.log(_board);
 
     }
 
@@ -66,12 +66,12 @@ const player = (_name, _mark) => {
 const game = ((player1, player2) => {
     let _playerTurn;
     const _resetButton = document.getElementById('reset');
+    const _endMessage = document.getElementById('game-message');
 
     const _activateBoard = () => {
         for(let i = 0; i < 9; i++) {
             const box = document.getElementById(`box${i+1}`);
-            box.style.visibility = "visible";
-            box.innerHTML = '';
+            // box.style.visibility = "visible";
             box.addEventListener('click', _markBox);
         }
     };
@@ -79,55 +79,89 @@ const game = ((player1, player2) => {
     const _disableBoard = () => {
         for(let i = 0; i < 9; i++) {
             const box = document.getElementById(`box${i+1}`);
-            box.style.visibility = "hidden";
             box.removeEventListener('click', _markBox);
         }
-        
-        _resetButton.style.visibility = "visible";
-        _resetButton.addEventListener('click',_resetGame)
+    }
+
+    const _clearBoard = () => {
+        for (let i = 0; i < 9; i++) {
+            const box = document.getElementById(`box${i+1}`);
+            box.innerHTML = '';
+        }
     }
 
     const _markBox = (e) => {
         const position = e.target.getAttribute('id')[3]-1;
         const currentMark = _playerTurn.getMark()
         if(gameBoard.isEmpty(position)){
-            e.target.append(_playerTurn.getMark());
+            e.target.append(currentMark);
             gameBoard.markBoard(position, currentMark);
             if(gameBoard.checkBoard() || gameBoard.isFull()) {
-                endGame()
+                _endGame();
+            } else {
+                _togglePlayer();
             }
-            _togglePlayer();
+            
         } else {
             console.log("INVALID MOVE")
         }
     }
 
+    const _markBoxAI = () => {
+        const ranPosition = Math.floor(Math.random()*9);
+        const box = document.getElementById(`box${ranPosition+1}`);
+        const currentMark = _playerTurn.getMark()
+        if(gameBoard.isEmpty(ranPosition)){
+            console.log(currentMark)
+            box.append(currentMark);
+            gameBoard.markBoard(ranPosition, currentMark);
+            
+            if(gameBoard.checkBoard() || gameBoard.isFull()) {
+                _endGame();
+            } else {
+                _togglePlayer();
+            }
+            
+        } else {
+            _markBoxAI();
+        }
+    }
+
     _togglePlayer = () => {
         _playerTurn = _playerTurn === player1 ? player2 : player1;
+        console.log(_playerTurn.getName());
+        if(_playerTurn.getName() === "v1.0") {
+            _markBoxAI();
+        }
     }
 
-    const endGame = () => {
-        const endMessage = document.getElementById('game-message');
-        endMessage.innerText = gameBoard.isFull() ? 'GAME IS A DRAW' : `${_playerTurn.getName()} HAS WON!`;
+    const _endGame = () => {
+        _endMessage.innerText = gameBoard.checkBoard() ? `${_playerTurn.getName()} HAS WON!` : 'GAME IS A DRAW';
         _disableBoard();
-    }
-
-    const playGame = () => {
-        player1 = player('xania', 'X');
-        player2 = player('apeach', 'O');
-        _playerTurn = player1;
-        _activateBoard();
-
-        
-        
+        _resetButton.style.visibility = "visible";
+        _resetButton.addEventListener('click',_resetGame)
     }
 
     const _resetGame = () => {
         gameBoard.clearBoard();
         _resetButton.style.visibility = "hidden";
+        _endMessage.innerText = "";
+        _clearBoard();
         _activateBoard();
     }
-    
+
+    const playGame = () => {
+        player1 = player('v1.0', 'X');
+        player2 = player('xania', 'O');
+        if (player1.getName() === 'v1.0') {
+            _playerTurn = player2;
+            _togglePlayer();
+        } else {
+            _playerTurn = player1;
+        }
+        _activateBoard();
+    }
+
     return{playGame}
 
 })();
