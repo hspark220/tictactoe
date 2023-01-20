@@ -89,6 +89,17 @@ const game = (() => {
         }
     }
 
+    const _printBoard = () => {
+        for(let i = 0; i < 9; i++) {
+            const box = document.createElement('div');
+            const gameBoard = document.querySelector('.game-board');
+            box.setAttribute('class',`box`);
+            box.setAttribute('id',`box${i+1}`);
+            gameBoard.append(box);
+
+        }
+    }
+
     const _markBox = (e) => {
         const position = e.target.getAttribute('id')[3]-1;
         const currentMark = _playerTurn.getMark()
@@ -146,17 +157,19 @@ const game = (() => {
         _endMessage.innerText = "";
         _clearBoard();
         _activateBoard();
+        
     }
 
     const playGame = (player1, player2) => {
-        
+        _printBoard();
+        _activateBoard();
         if (player1.getName() === 'v1.0') {
             _playerTurn = player2;
             _togglePlayer();
         } else {
             _playerTurn = player1;
         }
-        _activateBoard();
+        
     }
 
     return{playGame}
