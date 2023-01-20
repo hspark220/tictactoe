@@ -8,7 +8,7 @@ const gameBoard = (() => {
 
     const markBoard = (position, mark) => {
         _board[position] = mark;
-        console.log(_board);
+        //console.log(_board);
 
     }
 
@@ -63,7 +63,7 @@ const player = (_name, _mark) => {
 }
 
 // Running the game and the logics
-const game = ((player1, player2) => {
+const game = (() => {
     let _playerTurn;
     const _resetButton = document.getElementById('reset');
     const _endMessage = document.getElementById('game-message');
@@ -71,7 +71,6 @@ const game = ((player1, player2) => {
     const _activateBoard = () => {
         for(let i = 0; i < 9; i++) {
             const box = document.getElementById(`box${i+1}`);
-            // box.style.visibility = "visible";
             box.addEventListener('click', _markBox);
         }
     };
@@ -112,10 +111,8 @@ const game = ((player1, player2) => {
         const box = document.getElementById(`box${ranPosition+1}`);
         const currentMark = _playerTurn.getMark()
         if(gameBoard.isEmpty(ranPosition)){
-            console.log(currentMark)
             box.append(currentMark);
             gameBoard.markBoard(ranPosition, currentMark);
-            
             if(gameBoard.checkBoard() || gameBoard.isFull()) {
                 _endGame();
             } else {
@@ -129,9 +126,10 @@ const game = ((player1, player2) => {
 
     _togglePlayer = () => {
         _playerTurn = _playerTurn === player1 ? player2 : player1;
-        console.log(_playerTurn.getName());
         if(_playerTurn.getName() === "v1.0") {
-            _markBoxAI();
+            _disableBoard();
+            setTimeout(_markBoxAI, 1000);
+            _activateBoard();
         }
     }
 
@@ -150,9 +148,8 @@ const game = ((player1, player2) => {
         _activateBoard();
     }
 
-    const playGame = () => {
-        player1 = player('v1.0', 'X');
-        player2 = player('xania', 'O');
+    const playGame = (player1, player2) => {
+        
         if (player1.getName() === 'v1.0') {
             _playerTurn = player2;
             _togglePlayer();
@@ -166,4 +163,8 @@ const game = ((player1, player2) => {
 
 })();
 
-game.playGame();
+const player1 = player('v1.0', 'X');
+const player2 = player('xania', 'O');
+
+
+game.playGame(player1, player2);
