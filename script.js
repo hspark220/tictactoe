@@ -65,6 +65,9 @@ const player = (_name, _mark) => {
 // Running the game and the logics
 const game = (() => {
     let _playerTurn;
+    let _player1;
+    let _player2;
+
     const _resetButton = document.getElementById('reset');
     const _endMessage = document.getElementById('game-message');
 
@@ -83,10 +86,11 @@ const game = (() => {
     }
 
     const _clearBoard = () => {
-        for (let i = 0; i < 9; i++) {
-            const box = document.getElementById(`box${i+1}`);
-            box.innerHTML = '';
-        }
+            for (let i = 0; i < 9; i++) {
+                const box = document.getElementById(`box${i+1}`);
+                box.innerHTML = '';
+                box.remove();
+            }
     }
 
     const _printBoard = () => {
@@ -133,19 +137,20 @@ const game = (() => {
         } else {
             _markBoxAI();
         }
+        _activateBoard();
     }
 
     _togglePlayer = () => {
-        _playerTurn = _playerTurn === player1 ? player2 : player1;
+        _playerTurn = _playerTurn === _player1 ? _player2 : _player1;
         if(_playerTurn.getName() === "v1.0") {
             _disableBoard();
             setTimeout(_markBoxAI, 1000);
-            _activateBoard();
+            
         }
     }
 
     const _endGame = () => {
-        _endMessage.innerText = gameBoard.checkBoard() ? `${_playerTurn.getName()} HAS WON!` : 'GAME IS A DRAW';
+        _endMessage.innerText = gameBoard.checkBoard() ? `${_playerTurn.getName()} WON!` : 'GAME IS A DRAW';
         _disableBoard();
         _resetButton.style.visibility = "visible";
         _resetButton.addEventListener('click',_resetGame)
@@ -156,28 +161,53 @@ const game = (() => {
         _resetButton.style.visibility = "hidden";
         _endMessage.innerText = "";
         _clearBoard();
-        _activateBoard();
         
     }
 
     const playGame = (player1, player2) => {
+        _player1 = player1;
+        _player2 = player2;
         _printBoard();
         _activateBoard();
-        if (player1.getName() === 'v1.0') {
-            _playerTurn = player2;
+        
+        if (_player1.getName() === 'v1.0') {
+            _playerTurn = _player2;
             _togglePlayer();
         } else {
-            _playerTurn = player1;
+            _playerTurn = _player1;
         }
         
     }
 
-    return{playGame}
+    const activateGame = () => {
+        const aiButton = document.getElementById('ai');
+        const huiButton = document.getElementById('hui');
+
+        const playAi = () => {
+            try {
+                _resetGame();
+            } catch {}
+            const player1 = player('You', 'X');
+            const player2 = player('v1.0', 'O');
+
+            playGame(player1, player2);
+        }
+        const playHui = () => {
+            try {
+                _resetGame();
+            } catch {}
+            const player1 = player('You1', 'X');
+            const player2 = player('You2', 'O');
+
+            playGame(player1, player2);
+        }
+
+        aiButton.addEventListener('click', playAi);
+        huiButton.addEventListener('click',playHui);
+    }
+
+    return{activateGame}
 
 })();
 
-const player1 = player('v1.0', 'X');
-const player2 = player('xania', 'O');
-
-
-game.playGame(player1, player2);
+game.activateGame();
