@@ -9,6 +9,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 0.8rem;
 }
 
 .game-board {
@@ -22,14 +23,16 @@
 }
 
 .box {
-    background-color: rgba(240, 226, 226, 0.705);
+    background-color: #fcd34d8c;
     display: flex;
     justify-content: center;
     align-items: center;
+    
     /* visibility: hidden; */
 
     font-weight: 900;
     font-size: 3rem;
+
 }
 
 #box1 {
@@ -62,4 +65,23 @@
 
 #reset {
     visibility: hidden;
+}
+
+.button {
+    width: 4rem;
+    height: 2rem;
+    font-size: 1.3rem;
+    border: none;
+    background-color: white;
+}
+
+.button:hover {
+    box-shadow: inset 0 -0.7rem 0 #fcd34dda;
+}
+
+.game-message {
+    font-size: 1.2rem;
+    font-weight: 800;
+    height: 3rem;
+    box-shadow: inset 0 -0.7rem 0 #fcd34dda;
 }
